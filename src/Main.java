@@ -1,7 +1,9 @@
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import FileUtilities.DownloadSetup;
 import FileUtilities.FileFormatter;
 
 /**
@@ -19,14 +21,21 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
+		String testDir = "C:\\JavaHomeworks\\HW1";
+		
 		try {
-			FileFormatter ff = new FileFormatter("Test.java");
-			ArrayList<String> lineArray = ff.getLines();
-			System.out.println("Start");
-			for(int i = 0; i < lineArray.size(); i++){
-				System.out.println("--"+lineArray.get(i));
+			DownloadSetup ds = new DownloadSetup(testDir);
+			File dir = new File(testDir);
+			File[] files = dir.listFiles();
+			for(File file : files){
+				System.out.println("----"+file.getName());
+				FileFormatter ff = new FileFormatter(file);
+				//file = ff.getFile();
 			}
-			System.out.println("End");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

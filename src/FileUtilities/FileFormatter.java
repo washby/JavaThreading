@@ -16,19 +16,26 @@ import java.util.ArrayList;
 
 public class FileFormatter {
 	
-	BufferedReader reader;
-	ArrayList<String> lines = new ArrayList<String>();
-	
+	private BufferedReader reader;
+	private ArrayList<String> lines = new ArrayList<String>();
+	private File file;
 	
 
 	public FileFormatter(String filePath) throws IOException{
-		InputStream inFile = new FileInputStream(filePath);
+		File file = new File(filePath);
+		new FileFormatter(file);
+	}
+	
+	public FileFormatter(File file) throws IOException{
+		InputStream inFile = new FileInputStream(file.getAbsolutePath());
 		InputStreamReader inReader = new InputStreamReader(inFile);
 		this.reader = new BufferedReader(inReader);	
-		formatFile();
+		getLinesInFile();
+		FileBuilder fb = new FileBuilder(file.getAbsolutePath(), lines);
+		file = fb.getFile();
 	}
 
-	private void formatFile() throws IOException{
+	private void getLinesInFile() throws IOException{
 		String line;
 		while((line = reader.readLine()) != null){
 			boolean addLine = true;
@@ -45,7 +52,8 @@ public class FileFormatter {
 		String temp = "";
 		for(int i = 0; i<line.length(); i++){
 			if(line.charAt(i)=='/'){
-				if(line.length() >= i+1){
+				System.out.println("found first / at "+i+" with string length of "+line.length());
+				if(line.length() > i+1){
 					if(line.charAt(i+1) == '/'){
 						break;
 					}
@@ -61,5 +69,12 @@ public class FileFormatter {
 	 */
 	public ArrayList<String> getLines() {
 		return lines;
+	}
+	
+	/**
+	 * @return the file
+	 */
+	public File getFile() {
+		return file;
 	}
 }
