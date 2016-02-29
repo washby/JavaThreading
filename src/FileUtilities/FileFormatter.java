@@ -30,16 +30,18 @@ public class FileFormatter {
 		InputStream inFile = new FileInputStream(file.getAbsolutePath());
 		InputStreamReader inReader = new InputStreamReader(inFile);
 		this.reader = new BufferedReader(inReader);	
-		getLinesInFile();
+		setupLinesInFile();
+		formatIndentation();
 		FileBuilder fb = new FileBuilder(file.getAbsolutePath(), lines);
 		file = fb.getFile();
 	}
 
-	private void getLinesInFile() throws IOException{
+	private void setupLinesInFile() throws IOException{
 		String line;
 		while((line = reader.readLine()) != null){
+			line = line.trim();
 			boolean addLine = true;
-			line = stripSingleLineComments(line).trim();
+			//line = stripSingleLineComments(line).trim();
 			if(line.equals("")){addLine = false;}
 			
 			if(addLine){lines.add(line);}
@@ -62,6 +64,25 @@ public class FileFormatter {
 			temp += line.charAt(i);
 		}
 		return temp;
+	}
+	
+	private void formatIndentation(){
+		int tabs = 0;
+		for(int lineNumber = 0; lineNumber < lines.size(); lineNumber++){
+			String line = lines.get(lineNumber);
+			for(int i = 0; i<tabs; i++){
+				line = '\t'+line;
+			}
+			for(int i = 0; i<line.length(); i++){
+				if (line.charAt(i) == '{')
+					tabs++;
+				if (line.charAt(i) == '}'){
+					tabs--;
+					line = line.substring(1, line.length());
+				}
+			}
+			lines.set(lineNumber, line);
+		}
 	}
 
 	/**
