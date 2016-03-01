@@ -4,12 +4,17 @@ import java.io.IOException;
 
 import fileUtilities.DownloadSetup;
 import fileUtilities.FileFormatter;
-import threadingUtils.RunJavaProgram;
+import threadingUtils.CompileAndRunJavaProgram;
 
 
 public class ProcessMain {
 	
 	public static void main(String[] args){
+		//test1();
+		test2();
+	}
+	
+	public static void test1(){
 		String properOutput = "Hello World.\n";
 		
 		String testDir = "C:\\JavaHomeworks\\HW1";
@@ -21,7 +26,7 @@ public class ProcessMain {
 			for(File file : files){
 				String filename = file.getAbsolutePath(); 
 				System.out.println("----"+file.getName());
-				RunJavaProgram mp = new RunJavaProgram(filename);
+				CompileAndRunJavaProgram mp = new CompileAndRunJavaProgram(filename);
 				String str = mp.getOutput();
 				if(str.trim().equalsIgnoreCase(properOutput.trim())){
 					System.out.println(filename + " is correct.");
@@ -39,7 +44,11 @@ public class ProcessMain {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public static void test2(){
+		String filename= "C:\\JavaHomeworks\\HW1\\amfinn.java";
+		CompileAndRunJavaProgram mp = new CompileAndRunJavaProgram(filename);
 		
 	}
 

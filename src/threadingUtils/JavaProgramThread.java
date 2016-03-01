@@ -4,28 +4,22 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import fileUtilities.FileVariables;
 
-public class RunJavaProgram {
+public class JavaProgramThread extends Thread {
 	
-	private FileVariables fv = new FileVariables();
+	private String dirName;
+	private String programName;
 	private int compileExitValue  = -1;
 	private int runExitValue = -1;
 	private String output;
 	private String errorOutput;
 	
-	public RunJavaProgram(String filePath){
-		String programName = filePath.substring(filePath.lastIndexOf(fv.dirDelimiter)+1,filePath.lastIndexOf("."));
-		String dirName = filePath.substring(0,filePath.lastIndexOf(fv.dirDelimiter));
-		try{
-			compileExitValue = runProcess("javac "+filePath);
-			if (compileExitValue == 0){
-				runExitValue = runProcess("java -cp "+dirName+" "+programName);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+	public JavaProgramThread(String dirName, String programName){
+		this.dirName = dirName;
+		this.programName = programName;
 	}
+	
+	
 	
 	/**
 	 * @return the compileExitValue
@@ -55,6 +49,9 @@ public class RunJavaProgram {
 		return errorOutput;
 	}
 
+	
+	
+	
 	/*
 	 * methods below come from 
 	 * http://stackoverflow.com/questions/4842684/how-to-compile-run-java-program-in-another-java-program
@@ -65,7 +62,19 @@ public class RunJavaProgram {
 	    Process pro = Runtime.getRuntime().exec(command);
 	    output = outputToString(pro.getInputStream());
 	    errorOutput = outputToString(pro.getErrorStream());
-	    pro.waitFor();
+	    //pro.waitFor();
+	    //boolean result = pro.waitFor(1L, TimeUnit.MILLISECONDS);
+	    int cnt = 0;
+	    do{
+	    	this.wait(100L);
+	    	cnt++;
+	    }while(pro.isAlive() && cnt<10);
+	    
+	    if(cnt >= 10){
+	    	System.out.println("Destroying...");
+	    	pro.destroyForcibly();
+	    }
+	    
 	    return pro.exitValue();
 	}
 	
