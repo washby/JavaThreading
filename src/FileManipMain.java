@@ -3,8 +3,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import FileUtilities.DownloadSetup;
-import FileUtilities.FileFormatter;
+import fileUtilities.DownloadSetup;
+import fileUtilities.FileFormatter;
+
 
 /**
  * 
@@ -14,7 +15,7 @@ import FileUtilities.FileFormatter;
  * @author washby
  *
  */
-public class Main {
+public class FileManipMain {
 
 	/**
 	 * @param args
