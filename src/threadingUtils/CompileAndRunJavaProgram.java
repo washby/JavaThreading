@@ -21,7 +21,7 @@ public class CompileAndRunJavaProgram{
 		try{
 			compileExitValue = runProcess("javac "+filePath);
 			if (compileExitValue == 0){
-				JavaProgramThread program = new JavaProgramThread(dirName, programName);
+				CompileJavaThread program = new CompileJavaThread(dirName, programName);
 				program.run();
 			}
 		}catch(Exception e){

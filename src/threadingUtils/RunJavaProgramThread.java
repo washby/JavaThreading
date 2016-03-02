@@ -1,22 +1,34 @@
 package threadingUtils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-public class JavaProgramThread extends Thread {
+public class RunJavaProgramThread extends Thread{
 	
-	private String dirName;
-	private String programName;
+	private boolean debugMode = false;
+	
+	private Process pro;
+	private volatile Thread thisThread;
+	private String command = "java -cp ";
 	private int compileExitValue  = -1;
-	private int runExitValue = -1;
 	private String output;
 	private String errorOutput;
 	
-	public JavaProgramThread(String dirName, String programName){
-		this.dirName = dirName;
-		this.programName = programName;
+	public RunJavaProgramThread(String dirName, String programName){
+		this.command += dirName+" "+programName;
+		println("Running '"+this.command+"'");
+		
+	}
+		
+	/**
+	 * @param str 
+	 * Prints out the string passed based on the debugMode value.
+	 */
+	private void println(String str){
+		System.out.println((debugMode)?str:"");
 	}
 	
 	
@@ -26,13 +38,6 @@ public class JavaProgramThread extends Thread {
 	 */
 	public int getCompileExitValue() {
 		return compileExitValue;
-	}
-
-	/**
-	 * @return the runExitValue
-	 */
-	public int getRunExitValue() {
-		return runExitValue;
 	}
 
 	/**
@@ -48,9 +53,10 @@ public class JavaProgramThread extends Thread {
 	public String getErrorOutput() {
 		return errorOutput;
 	}
-
 	
-	
+	public void killProcess(){
+		pro.destroy();
+	}
 	
 	/*
 	 * methods below come from 
@@ -58,24 +64,19 @@ public class JavaProgramThread extends Thread {
 	 * with slight modification
 	 * START
 	 */
-	private int runProcess(String command) throws Exception {
-	    Process pro = Runtime.getRuntime().exec(command);
-	    output = outputToString(pro.getInputStream());
-	    errorOutput = outputToString(pro.getErrorStream());
-	    //pro.waitFor();
-	    //boolean result = pro.waitFor(1L, TimeUnit.MILLISECONDS);
-	    int cnt = 0;
-	    do{
-	    	this.wait(100L);
-	    	cnt++;
-	    }while(pro.isAlive() && cnt<10);
-	    
-	    if(cnt >= 10){
-	    	System.out.println("Destroying...");
-	    	pro.destroyForcibly();
-	    }
-	    
-	    return pro.exitValue();
+	@Override
+	public void run(){
+	    thisThread = Thread.currentThread();
+		try {
+			pro = Runtime.getRuntime().exec(this.command);
+		    output = outputToString(pro.getInputStream());
+		    errorOutput = outputToString(pro.getErrorStream());
+		    pro.waitFor();
+		    this.compileExitValue = pro.exitValue();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			this.compileExitValue = -42;
+		}
 	}
 	
 	private String outputToString(InputStream ins) throws Exception {
@@ -90,5 +91,6 @@ public class JavaProgramThread extends Thread {
 	/*
 	 * END
 	 */
+	
 
 }
