@@ -9,7 +9,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import FileUtilities.DownloadSetup;
+import fileUtilities.DownloadSetup;
+
 
 public class DownloadSetupJU {
 

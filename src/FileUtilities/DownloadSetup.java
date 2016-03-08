@@ -1,7 +1,7 @@
 /**
  * 
  */
-package FileUtilities;
+package fileUtilities;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,15 +45,19 @@ public class DownloadSetup {
 		}
 	}
 	
-	private void renameFilesAndClasses() throws IOException{
-		for(File file : files){
-			String str = file.getName();
-			int firstPos = str.indexOf("_");
-			int secPos = str.indexOf("_", firstPos+1);
-			String newClassName = str.substring(firstPos+1, secPos);
-			String newFileName = dirString+"\\"+newClassName+".java";
-			
-			renameClass(file, newFileName, newClassName);
+	private void renameFilesAndClasses(){
+		try{
+			for(File file : files){
+				String str = file.getName();
+				int firstPos = str.indexOf("_");
+				int secPos = str.indexOf("_", firstPos+1);
+				String newClassName = str.substring(firstPos+1, secPos);
+				String newFileName = dirString+"\\"+newClassName+".java";
+				
+				renameClass(file, newFileName, newClassName);
+			}
+		}catch(Exception e){
+			;//do nothing
 		}
 	}
 	

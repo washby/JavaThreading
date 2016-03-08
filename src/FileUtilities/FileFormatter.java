@@ -1,4 +1,4 @@
-package FileUtilities;
+package fileUtilities;
 /**
  * @author washby
  *

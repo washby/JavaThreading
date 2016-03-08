@@ -1,7 +1,7 @@
 /**
  * 
  */
-package FileUtilities;
+package fileUtilities;
 
 import java.io.BufferedWriter;
 import java.io.File;
