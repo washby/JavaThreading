@@ -1,44 +1,43 @@
 package threadingUtils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import fileUtilities.FileVariables;
 
-public class RunJavaProgram {
+public class RunJavaProgramThread extends Thread{
 	
-	private FileVariables fv = new FileVariables();
+	private boolean debugMode = false;
+	
+	private Process pro;
+	private volatile Thread thisThread;
+	private String command = "java -cp ";
 	private int compileExitValue  = -1;
-	private int runExitValue = -1;
 	private String output;
 	private String errorOutput;
 	
-	public RunJavaProgram(String filePath){
-		String programName = filePath.substring(filePath.lastIndexOf(fv.dirDelimiter)+1,filePath.lastIndexOf("."));
-		String dirName = filePath.substring(0,filePath.lastIndexOf(fv.dirDelimiter));
-		try{
-			compileExitValue = runProcess("javac "+filePath);
-			if (compileExitValue == 0){
-				runExitValue = runProcess("java -cp "+dirName+" "+programName);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+	public RunJavaProgramThread(String dirName, String programName){
+		this.command += dirName+" "+programName;
+		println("Running '"+this.command+"'");
+		
 	}
+		
+	/**
+	 * @param str 
+	 * Prints out the string passed based on the debugMode value.
+	 */
+	private void println(String str){
+		System.out.println((debugMode)?str:"");
+	}
+	
+	
 	
 	/**
 	 * @return the compileExitValue
 	 */
 	public int getCompileExitValue() {
 		return compileExitValue;
-	}
-
-	/**
-	 * @return the runExitValue
-	 */
-	public int getRunExitValue() {
-		return runExitValue;
 	}
 
 	/**
@@ -54,19 +53,30 @@ public class RunJavaProgram {
 	public String getErrorOutput() {
 		return errorOutput;
 	}
-
+	
+	public void killProcess(){
+		pro.destroy();
+	}
+	
 	/*
 	 * methods below come from 
 	 * http://stackoverflow.com/questions/4842684/how-to-compile-run-java-program-in-another-java-program
 	 * with slight modification
 	 * START
 	 */
-	private int runProcess(String command) throws Exception {
-	    Process pro = Runtime.getRuntime().exec(command);
-	    output = outputToString(pro.getInputStream());
-	    errorOutput = outputToString(pro.getErrorStream());
-	    pro.waitFor();
-	    return pro.exitValue();
+	@Override
+	public void run(){
+	    thisThread = Thread.currentThread();
+		try {
+			pro = Runtime.getRuntime().exec(this.command);
+		    output = outputToString(pro.getInputStream());
+		    errorOutput = outputToString(pro.getErrorStream());
+		    pro.waitFor();
+		    this.compileExitValue = pro.exitValue();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			this.compileExitValue = -42;
+		}
 	}
 	
 	private String outputToString(InputStream ins) throws Exception {
@@ -81,5 +91,6 @@ public class RunJavaProgram {
 	/*
 	 * END
 	 */
+	
 
 }
