@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Timer;
 
 import fileUtilities.DownloadSetup;
 import fileUtilities.FileFormatter;
