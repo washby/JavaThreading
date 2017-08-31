@@ -3,7 +3,7 @@ import java.util.*;
 public class HW6{
    public static void main(String [] args){
       int x = 0;
-      int y = 1;
+      int y = 0;
       int sum = 1; 
       do{
          Scanner keyboard = new Scanner(System.in);
